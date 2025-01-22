@@ -63,6 +63,16 @@ const mongooseUserSchema = new Schema(
       required: true,
       default: "",
     },
+    // Whether the user confirmed their email
+    verify: {
+      type: Boolean,
+      default: false, // after register it is false
+    },
+    // Verification code that use will receive to their email for verification
+    verificationCode: {
+      type: String,
+      default: "",
+    },
   },
   { versionKey: false, timestamps: true },
 );

@@ -37,6 +37,13 @@ authRouter.post(
   authController.logout,
 );
 
+// logout
+authRouter.post(
+  "/verify/:verificationCode",
+  authenticate, // checks if user is logged in
+  authController.verify,
+);
+
 // Change avatar
 authRouter.patch(
   "/avatars",

@@ -1,10 +1,9 @@
-// const sgMail = require("@sendgrid/mail");
+// Usually used special function for send email and pass data from outside
 import sgMail from "@sendgrid/mail";
 import "dotenv/config";
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY_TEST_PROJECT);
 
-// usually used special function for send email and pass data from outside
 export const sendEmail = async data => {
   const msg = {
     ...data,

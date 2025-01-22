@@ -1,11 +1,17 @@
 # Task
 
-- After registration the user can login after he confirm email only.
-- Used sendgrid email service.
+1. After registration, the user can log in only after confirming their email.
+
+- add sendEmail.js
+- add to userModel.js fields `verify` (whether user confirmed their email) and `verificationCode` (code for verification the user)
+- add to registration controller code for verification
+- send email to user for confirmation (used sendEmail.js) by link (GET request) `http://localhost:3000/api/auth/verify/${verificationCode}`
+
+2. The SendGrid email service is used.
 
 # Options
 
-## For render to render.com needs add to package.json:
+## For deployment to Render.com, add the following to package.json:
 
 ```js
   "engines": {
@@ -15,54 +21,54 @@
 
 # Packages
 
-## Server and HTTP-requests processing
+## Server and HTTP-request processing
 
-- `express` - create server package. Node.js framework for build web-applications and API. Gave instruments for routing, processing requests and response.
-- `cors` - allows setup support CORS (Cross-Origin Resource Sharing), for server accepting requests from other domains or ports.
-- `logger` - brocker for logging HTTP-requests for Node.js
+- `express` - A server creation package. A Node.js framework for building web applications and APIs. Provides tools for routing, request processing, and sending responses.
+- `cors` - Enables support for CORS (Cross-Origin Resource Sharing), allowing the server to accept requests from different domains or ports.
+- `logger` - Middleware for logging HTTP requests in Node.js.
 
 ## Database
 
-- `mongoose`- an object-document module for MongoDB. Provides a schema for data modeling and data interaction via JavaScrip.
+- `mongoose`- An object-document mapper (ODM) for MongoDB. It provides a schema-based solution for modeling and interacting with data in JavaScript.
 
-## Secure and authentication
+## Security and Authentication
 
-- `bcrypt` - Password hashing library. Used to store passwords in a secure format. Provides hashing and hash verification functions.
-- `jsonwebtoken` - package for work with JWT (JSON Web Token) - a standard for transmitting data as token. Used for authentication and authorization, in particular, for creating and verifying tokens.
+- `bcrypt` – A library for password hashing. Used to securely store passwords by providing hashing and verification functions.
+- `jsonwebtoken` – A package for working with JWT (JSON Web Token), a standard for transmitting data as tokens. Used for authentication and authorization, including creating and verifying tokens.
 
 ## Configuration
 
-- `dotenv` - allows save confidential data (such as API keys, passwords) in an .env file and load them to environment variables
-- `cross-env` - provides the ability to set environment variables for cross-platform environments, such as Windows, Linux or MacOS via the console.
+- `dotenv` – Allows you to store confidential data (e.g., API keys, passwords) in an .env file and load them into environment variables.
+- `cross-env` – Enables setting environment variables in a cross-platform manner, compatible with Windows, Linux, and macOS, via the console.
 
 ## Tools
 
-- `nodemon` - tool for automatic restarting Node.js-applications after code changes during development. Eliminates the need manually restart the server.
+- `nodemon` - A tool for automatically restarting Node.js applications when changes are made during development. Removes the need for manual restarts.
 
 ## Data validation
 
-- `joi` - package for schemas describing and validating data against those schemas. Used for validating request body, arguments and other data.
-- `mongoose-validator` - package for integration a validation library with Mongoose, allowing you to validate field values in MongoDB schemas.
-- `validator` - Package for verifying and normalizing strings. Includes methods for verifying email, URL, numbers, UUID, IP-addresses and also for validation.
-- [`jest`](https://jestjs.io/) - program test for js
-  for ES5 project enough: `npm i --save-dev jest`
-  for ES6 must be add: `npm i --save-dev @jest/globals`
-- [`supertest`](https://www.npmjs.com/package/supertest) - Imitates HTTP-request (`npm install supertest --save-dev`)
+`joi` – A library for describing data schemas and validating data against those schemas. Useful for validating request bodies, parameters, and other input data.
+`mongoose-validator` – A package for integrating validation library with Mongoose. Allowing you to validate field values in MongoDB schemas.
+`validator` – A library for validating and normalizing strings. Includes methods for validating emails, URLs, numbers, UUIDs, IP-addresses, and more.
+[`jest`](https://jestjs.io/) – The program test for js. A JavaScript testing framework.
+For ES5 projects enough: `npm i --save-dev jest`.
+For ES6 projects must be add: `npm i --save-dev @jest/globals`.
+[`supertest`](https://www.npmjs.com/package/supertest) – A library for simulating HTTP-requests for testing purposes (`npm install supertest --save-dev`).
 
 ## Logging
 
-- `morgan` - Middleware for HTTP requests logging. Used for track incoming requests and server responses.
+- `morgan` - Middleware for logging HTTP requests. Useful for tracking incoming requests and server responses.
 
 ## Other tools
 
-- `nanoid` - generator of uniq short keys. Used for example for creating user IDs or tokens.
+- `nanoid` - A generator for unique, short identifiers. Often used for creating user IDs or tokens.
 
 ## Send email services
 
-- `nodemailer` - send emails, using client mail service
-- `@sendgrid/mail` - send email by sendgrid broker service
+- `nodemailer` - A library for sending emails using client-defined email services
+- `@sendgrid/mail` - A package for sending emails through the SendGrid email service.
 
 ## Work with media files
 
-- `multer` - Allows upload files together with fields. The middleware for processing multipart/form-data. Used for load files to server (for example images or documents).
-- [`gravatar`](https://www.npmjs.com/package/gravatar) - Package for integration the Gravatar - global avatar service. Allows you to receive users avatars by their emails.
+- `multer` - Allows upload files together with fields. Middleware for processing multipart/form-data. Primarily used for uploading files to the server (e.g., images or documents).
+- [`gravatar`](https://www.npmjs.com/package/gravatar) - A package for integrating the Gravatar service, which provides globally recognized avatars. Allows fetching user avatars based on email addresses.

@@ -8,8 +8,10 @@ import "dotenv/config"; // must be imported in each place where you get any keys
 import gravatar from "gravatar";
 import path from "path";
 import fs from "fs/promises";
+import { nanoid } from "nanoid";
+import { sendEmail } from "../utils/sendEmail.js";
 
-const { SECRET_KEY = "" } = process.env;
+const { SECRET_KEY = "", BASE_URL } = process.env;
 
 //# Moved to "upload" middleware
 // const tempDir = path.join(__dirname, "../", "temp");
@@ -46,17 +48,32 @@ const register = async (req, res, next) => {
     // 404(Return error.Useful if you want to handle the absence of an avatar in your own way)
     // own picture: "default: 'https://example.com/my-default-avatar.png',"
   });
-
+  const verificationCode = nanoid();
   const newUser = await User.create({
     ...req.body,
     password: hashedPassword,
     avatarURL: defaultAvatarURL,
+    verificationCode,
   });
+
+  const verifyEmailData = {
+    to: newUser.email, // Change to your recipient
+    subject: "Verify your email",
+    html: `<p>You received this message because you register on our site. If it was not you please ignore it. If it was you, please click on link below for confirm your email.</p>
+    <a target="_blank" href="${BASE_URL}/api/auth/verify/${verificationCode}">Click for verify email</a>`,
+  };
+
+  await sendEmail(verifyEmailData);
 
   res.status(201).json({
     email: newUser.email,
     name: newUser.name,
   });
+};
+
+const verify = async (req, res) => {
+  console.log("verify >> req:::", req);
+  // const {verificationCode} = req.param
 };
 
 const login = async (req, res, next) => {
@@ -140,6 +157,7 @@ const changeAvatar = async (req, res) => {
 
 export const authController = {
   register: tryCatchDecorator(register),
+  verify: tryCatchDecorator(verify),
   login: tryCatchDecorator(login),
   getCurrentUser: tryCatchDecorator(getCurrentUser), // can be without tryCatchDecorator
   logout: tryCatchDecorator(logout),
