@@ -16,6 +16,16 @@ authRouter.post(
   authController.register, // register new user
 );
 
+// verify
+authRouter.get("/verify/:verificationCode", authController.verifyEmail);
+
+// resend verification email
+authRouter.post(
+  "/verify",
+  checkErrorJoiSchemaDecorator(joiUserSchemas.emailUser), // check by User model
+  authController.resendVerifyEmail,
+);
+
 // login
 authRouter.post(
   "/login",
@@ -35,13 +45,6 @@ authRouter.post(
   "/logout",
   authenticate, // checks if user is logged in
   authController.logout,
-);
-
-// logout
-authRouter.post(
-  "/verify/:verificationCode",
-  authenticate, // checks if user is logged in
-  authController.verify,
 );
 
 // Change avatar

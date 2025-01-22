@@ -6,10 +6,15 @@
     <title>Document</title>
   </head>
   <body>
-    <!-- <a
-      target="_blank"
-      href="http://localhost:3000/api/auth/verify/${verificationCode}"
-      >Click for verify email</a
-    > -->
+    <!-- Frontend can to make known backend about needs language by two ways: -->
+    <!-- First way: in hidden field -->
+    <form action="">
+      <!-- Hidden field for set/switch user language (will send to backend) -->
+      <input type="hidden" name="land" value="ua" />
+    </form>
+    <!-- Second way (easier way): as AJAX-request in string params:
+    http:\\localhost:3000/books?lang=ua
+    and after read this value in backend by use req.query
+    -->
   </body>
 </html>

@@ -71,11 +71,56 @@ const register = async (req, res, next) => {
   });
 };
 
-const verify = async (req, res) => {
-  console.log("verify >> req:::", req);
-  // const {verificationCode} = req.param
+const verifyEmail = async (req, res) => {
+  const { verificationCode } = req.params;
+
+  // check whether in db user with those verificationCode
+  const user = await User.findOne({ verificationCode });
+  if (!user) {
+    throw HttpError({
+      status: 401,
+      message: `Verification code not found`,
+    });
+  }
+
+  await User.findByIdAndUpdate(user._id, {
+    verify: true,
+    verificationCode: "",
+  });
+
+  res.json({ message: "Email verify success" });
 };
 
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+  const user = await User.findOne({ email });
+
+  if (!user) {
+    throw HttpError({
+      status: 401,
+      message: `Verification code not found`,
+    });
+  }
+
+  // if user already verified but forgot it
+  if (user.verify) {
+    throw HttpError({
+      status: 401,
+      message: `User already verified`,
+    });
+  }
+
+  const verifyEmailData = {
+    to: email, // Change to your recipient
+    subject: "Verify your email",
+    html: `<p>You received this message because you register on our site. If it was not you please ignore it. If it was you, please click on link below for confirm your email.</p>
+    <a target="_blank" href="${BASE_URL}/api/auth/verify/${user.verificationCode}">Click for verify email</a>`,
+  };
+
+  await sendEmail(verifyEmailData);
+
+  res.status(201).json({ message: "Verify email send success" });
+};
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
@@ -83,6 +128,13 @@ const login = async (req, res, next) => {
     throw HttpError({
       status: 401,
       message: `Email or password invalid`,
+    });
+  }
+
+  if (!user.verify) {
+    throw HttpError({
+      status: 401,
+      message: `User not verified`,
     });
   }
 
@@ -128,7 +180,6 @@ const changeAvatar = async (req, res) => {
 
   const { _id } = req.user;
 
-  console.log("changeAvatar >> req.file:::", req.file);
   // changeAvatar >> req.file::: {
   //   fieldname: 'avatarFile',
   //!  originalname: 'The Hammer and the Cross.jpg',
@@ -157,7 +208,8 @@ const changeAvatar = async (req, res) => {
 
 export const authController = {
   register: tryCatchDecorator(register),
-  verify: tryCatchDecorator(verify),
+  verifyEmail: tryCatchDecorator(verifyEmail),
+  resendVerifyEmail: tryCatchDecorator(resendVerifyEmail),
   login: tryCatchDecorator(login),
   getCurrentUser: tryCatchDecorator(getCurrentUser), // can be without tryCatchDecorator
   logout: tryCatchDecorator(logout),

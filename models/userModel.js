@@ -89,6 +89,10 @@ const registerUser = Joi.object({
   password: Joi.string().required(),
 });
 
+const emailUser = Joi.object({
+  email: Joi.string().pattern(emailRegExp).required(),
+});
+
 const loginUser = Joi.object({
   email: Joi.string().pattern(emailRegExp).required(),
   password: Joi.string().required(),
@@ -97,4 +101,5 @@ const loginUser = Joi.object({
 export const joiUserSchemas = {
   registerUser,
   loginUser,
+  emailUser,
 };
